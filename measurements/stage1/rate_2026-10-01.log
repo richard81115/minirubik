@@ -1,0 +1,132 @@
+# Stage 1: Ripes instruction retirement rate measurements
+# Date: 2026-10-01
+# Ripes: v2.2.6-106-g5b8a616 (Linux x86_64 AppImage)
+# Host: Windows 11 + WSL, Ubuntu 26.04.1 LTS
+# CPU: 11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz
+#
+# All runs were executed in ~/ripes-scratch. The output below was copied
+# from the terminal after the runs, not captured automatically.
+#
+# count.s was edited in place between runs; only N (and, for the N = 25 run,
+# a comment) differed. The final versions are saved as count_iss.s
+# (N = 88500000) and count_5s.s (N = 584390).
+
+# ---------------------------------------------------------------------------
+# 1. Default ISA extensions (exit.s, no --isaexts)
+# ---------------------------------------------------------------------------
+$ ~/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src exit.s -t asm --proc RV32_ISS --runinfo --iret 2>&1
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+3
+===== simulation information (processor configuration, input file, ...)
+ISA extensions:
+processor: RV32_ISS
+source file: exit.s
+
+# ---------------------------------------------------------------------------
+# 2. M-extension check (mul.s, no --isaexts)
+# ---------------------------------------------------------------------------
+$ ~/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src mul.s -t asm --proc RV32_ISS --runinfo --iret 2>&1
+$ echo "shell exit status: $?"
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+ERROR: Error during assembly:
+INFO: Unknown opcode 'mul'
+shell exit status: 1
+
+# ---------------------------------------------------------------------------
+# 3. Validation run: RV32_ISS, N = 25 (predicted iret = 1 + 2*25 + 2 = 53)
+# ---------------------------------------------------------------------------
+$ ~/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src count.s -t asm --proc RV32_ISS --iret 2>&1
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+53
+
+# ---------------------------------------------------------------------------
+# 4a. Probe run: RV32_ISS, N = 5450000 (predicted iret = 10900004)
+# ---------------------------------------------------------------------------
+$ ~/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src count.s -t asm --proc RV32_ISS --iret --exectime 2>&1
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+10900004
+===== wall-clock model execution time (ms)
+636
+
+# ---------------------------------------------------------------------------
+# 4b. Probe run: RV32_5S, N = 102500 (predicted iret = 205004)
+# ---------------------------------------------------------------------------
+$ ~/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src count.s -t asm --proc RV32_5S --iret --cycles --exectime 2>&1
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== cycles
+410008
+===== instructions retired
+205004
+===== wall-clock model execution time (ms)
+1754
+
+# ---------------------------------------------------------------------------
+# 5a. Main measurement: RV32_ISS, N = 88500000, three runs
+#     (predicted iret = 177000004)
+# ---------------------------------------------------------------------------
+$ for i in 1 2 3; do ~/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src count.s -t asm --proc RV32_ISS --iret --exectime 2>&1; done
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+177000004
+===== wall-clock model execution time (ms)
+10554
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+177000004
+===== wall-clock model execution time (ms)
+10609
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+177000004
+===== wall-clock model execution time (ms)
+10208
+
+# ---------------------------------------------------------------------------
+# 5b. Main measurement: RV32_5S, N = 584390, three runs
+#     (predicted iret = 1168784, predicted cycles = 2337568)
+# ---------------------------------------------------------------------------
+$ for i in 1 2 3; do ~/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src count.s -t asm --proc RV32_5S --iret --cycles --exectime 2>&1; done
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== cycles
+2337568
+===== instructions retired
+1168784
+===== wall-clock model execution time (ms)
+10128
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== cycles
+2337568
+===== instructions retired
+1168784
+===== wall-clock model execution time (ms)
+10041
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== cycles
+2337568
+===== instructions retired
+1168784
+===== wall-clock model execution time (ms)
+10088
