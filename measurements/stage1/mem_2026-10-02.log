@@ -1,0 +1,108 @@
++ date -Iseconds
+2026-10-02T23:00:42+08:00
++ hostname
+DESKTOP-3G96U6R
++ grep --color=auto 'Model name'
++ lscpu
+Model name:                              AMD Ryzen 5 9600X 6-Core Processor
++ RIPES=/home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage
++ for n in 100 750000 3000000 12000000
++ for i in 1 2 3
++ /usr/bin/time -f 'maxrss_kb=%M elapsed_s=%e exit=%x' /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src measurements/stage1/mem_write_100.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+405
+maxrss_kb=31564 elapsed_s=0.19 exit=0
++ for i in 1 2 3
++ /usr/bin/time -f 'maxrss_kb=%M elapsed_s=%e exit=%x' /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src measurements/stage1/mem_write_100.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+405
+maxrss_kb=31564 elapsed_s=0.18 exit=0
++ for i in 1 2 3
++ /usr/bin/time -f 'maxrss_kb=%M elapsed_s=%e exit=%x' /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src measurements/stage1/mem_write_100.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+405
+maxrss_kb=31672 elapsed_s=0.18 exit=0
++ for n in 100 750000 3000000 12000000
++ for i in 1 2 3
++ /usr/bin/time -f 'maxrss_kb=%M elapsed_s=%e exit=%x' /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src measurements/stage1/mem_write_750000.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+3000006
+maxrss_kb=191028 elapsed_s=0.50 exit=0
++ for i in 1 2 3
++ /usr/bin/time -f 'maxrss_kb=%M elapsed_s=%e exit=%x' /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src measurements/stage1/mem_write_750000.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+3000006
+maxrss_kb=190988 elapsed_s=0.41 exit=0
++ for i in 1 2 3
++ /usr/bin/time -f 'maxrss_kb=%M elapsed_s=%e exit=%x' /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src measurements/stage1/mem_write_750000.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+3000006
+maxrss_kb=190716 elapsed_s=0.39 exit=0
++ for n in 100 750000 3000000 12000000
++ for i in 1 2 3
++ /usr/bin/time -f 'maxrss_kb=%M elapsed_s=%e exit=%x' /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src measurements/stage1/mem_write_3000000.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+12000006
+maxrss_kb=501184 elapsed_s=1.14 exit=0
++ for i in 1 2 3
++ /usr/bin/time -f 'maxrss_kb=%M elapsed_s=%e exit=%x' /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src measurements/stage1/mem_write_3000000.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+12000006
+maxrss_kb=501328 elapsed_s=0.93 exit=0
++ for i in 1 2 3
++ /usr/bin/time -f 'maxrss_kb=%M elapsed_s=%e exit=%x' /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src measurements/stage1/mem_write_3000000.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+12000006
+maxrss_kb=501256 elapsed_s=0.99 exit=0
++ for n in 100 750000 3000000 12000000
++ for i in 1 2 3
++ /usr/bin/time -f 'maxrss_kb=%M elapsed_s=%e exit=%x' /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src measurements/stage1/mem_write_12000000.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+48000006
+maxrss_kb=1921976 elapsed_s=4.10 exit=0
++ for i in 1 2 3
++ /usr/bin/time -f 'maxrss_kb=%M elapsed_s=%e exit=%x' /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src measurements/stage1/mem_write_12000000.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+48000006
+maxrss_kb=1921492 elapsed_s=3.61 exit=0
++ for i in 1 2 3
++ /usr/bin/time -f 'maxrss_kb=%M elapsed_s=%e exit=%x' /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src measurements/stage1/mem_write_12000000.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+48000006
+maxrss_kb=1921856 elapsed_s=3.88 exit=0
