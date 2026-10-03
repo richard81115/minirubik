@@ -5,3 +5,4 @@ solver
 mini
 *:Zone.Identifier
 host/pdb_stats
+host/ida_check

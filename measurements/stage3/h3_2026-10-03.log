@@ -1,0 +1,74 @@
++ date -Iseconds
+2026-10-03T22:00:35+08:00
++ hostname
+DESKTOP-3G96U6R
++ lscpu
++ grep --color=auto 'Model name'
+Model name:                              AMD Ryzen 5 9600X 6-Core Processor
++ cc --version
++ head -1
+cc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
++ cc -O2 -std=c99 -Wall -Wextra -Wpedantic host/ida_check.c -o host/ida_check
++ /usr/bin/time -f 'elapsed_s=%e maxrss_kb=%M exit=%x' ./host/ida_check
+permutation: 5040 states, 5040 reached, max distance 7
+  distance  0:      1
+  distance  1:      9
+  distance  2:     54
+  distance  3:    297
+  distance  4:   1233
+  distance  5:   2157
+  distance  6:   1244
+  distance  7:     45
+orientation: 729 states, 729 reached, max distance 6
+  distance  0:      1
+  distance  1:      2
+  distance  2:     12
+  distance  3:     64
+  distance  4:    274
+  distance  5:    336
+  distance  6:     40
+full BFS: 3674160 states reached
+H1 violations (h > d): 0
+gap d - h:
+   0:   17108
+   1:   83910
+   2:  377894
+   3: 1107100
+   4: 1416753
+   5:  591000
+   6:   77589
+   7:    2738
+   8:      68
+by exact distance d: states, min h, max h, mean h
+  d= 0:       1  0  0  0.00
+  d= 1:       9  1  1  1.00
+  d= 2:      54  2  2  2.00
+  d= 3:     321  3  3  3.00
+  d= 4:    1847  2  4  3.92
+  d= 5:    9992  1  5  4.56
+  d= 6:   50136  1  6  4.81
+  d= 7:  227536  1  7  4.98
+  d= 8:  870072  1  7  5.08
+  d= 9: 1887748  2  7  5.17
+  d=10:  623800  2  7  5.27
+  d=11:    2644  3  7  5.41
+IDA* on distance-11 states: 2644 states, 0 wrong lengths
+  nodes: max 639798 (rank 2437047), mean 206625
+  21345671111111: 233966 nodes
+iterative vs recursive on 2644 distance-11 states: 0 node-count mismatches, 0 bad solutions
+H3 over 3674160 states: 0 wrong lengths, 0 paths not reaching solved
+H3 CPU time: 194.0 s
+nodes by exact distance d: states, mean, max
+  d= 0:       1           1         1
+  d= 1:       9           6        10
+  d= 2:      54          10        16
+  d= 3:     321          13        32
+  d= 4:    1847          20       147
+  d= 5:    9992          41       646
+  d= 6:   50136         131      1445
+  d= 7:  227536         562      3945
+  d= 8:  870072        2861     14756
+  d= 9: 1887748       13901     55585
+  d=10:  623800       48136    250324
+  d=11:    2644      206625    639798
+elapsed_s=199.21 maxrss_kb=19836 exit=0
