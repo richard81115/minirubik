@@ -1,0 +1,164 @@
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
+enum { CUBIES = 7, PERMUTATIONS = 5040, ORIENTATIONS = 729 };
+
+typedef struct {
+    uint8_t p[CUBIES], o[CUBIES];
+} state_t;
+
+/* Copied from solver.c: move definitions. */
+static const uint8_t source[3][CUBIES] = {
+    {1, 4, 2, 0, 3, 5, 6},
+    {0, 1, 2, 4, 5, 6, 3},
+    {0, 2, 5, 3, 1, 4, 6},
+};
+static const uint8_t twist[3][CUBIES] = {
+    {1, 2, 0, 2, 1, 0, 0},
+    {0, 0, 0, 1, 2, 1, 2},
+    {0, 0, 0, 0, 0, 0, 0},
+};
+
+/* Copied from solver.c. */
+static state_t quarter_turn(state_t state, uint8_t face)
+{
+    state_t result;
+    for (uint8_t i = 0; i < CUBIES; ++i) {
+        uint8_t from = source[face][i];
+        result.p[i] = state.p[from];
+        result.o[i] = (uint8_t) ((state.o[from] + twist[face][i]) % 3U);
+    }
+    return result;
+}
+
+/* Copied from solver.c. */
+static uint32_t rank_state(const state_t *state)
+{
+    uint32_t p = 0, o = 0;
+    for (uint8_t i = 0; i < CUBIES; ++i) {
+        uint8_t smaller = 0;
+        for (uint8_t j = (uint8_t) (i + 1U); j < CUBIES; ++j)
+            if (state->p[j] < state->p[i])
+                ++smaller;
+        p = p * (CUBIES - i) + smaller;
+    }
+    for (uint8_t i = 0; i < 6; ++i)
+        o = o * 3U + state->o[i];
+    return p * ORIENTATIONS + o;
+}
+
+/* Copied from solver.c; a cast removes the -Wsign-compare warning. */
+static void unrank_state(uint32_t rank, state_t *state)
+{
+    uint8_t available[CUBIES] = {0, 1, 2, 3, 4, 5, 6};
+    uint32_t p = rank / ORIENTATIONS, o = rank % ORIENTATIONS, f = 720;
+    uint8_t sum = 0;
+    for (uint8_t i = 0; i < CUBIES; ++i) {
+        uint8_t q = (uint8_t) (p / f);
+        p %= f;
+        state->p[i] = available[q];
+        for (uint8_t j = q; j + 1U < (unsigned) (CUBIES - i); ++j)
+            available[j] = available[j + 1U];
+        if (i < 5)
+            f /= 6U - i;
+    }
+    for (uint8_t i = 6; i-- > 0;) {
+        state->o[i] = (uint8_t) (o % 3U);
+        sum = (uint8_t) (sum + state->o[i]);
+        o /= 3U;
+    }
+    state->o[6] = (uint8_t) ((3U - sum % 3U) % 3U);
+}
+
+static uint16_t perm_move[3][PERMUTATIONS];
+static uint16_t orient_move[3][ORIENTATIONS];
+static uint8_t perm_dist[PERMUTATIONS];
+static uint8_t orient_dist[ORIENTATIONS];
+
+/* Same construction as the first half of build_table in solver.c. */
+static void build_moves(void)
+{
+    state_t state;
+    for (uint16_t r = 0; r < PERMUTATIONS; ++r) {
+        unrank_state((uint32_t) r * ORIENTATIONS, &state);
+        for (uint8_t face = 0; face < 3; ++face) {
+            state_t next = quarter_turn(state, face);
+            perm_move[face][r] = (uint16_t) (rank_state(&next) / ORIENTATIONS);
+        }
+    }
+    for (uint16_t r = 0; r < ORIENTATIONS; ++r) {
+        unrank_state(r, &state);
+        for (uint8_t face = 0; face < 3; ++face) {
+            state_t next = quarter_turn(state, face);
+            orient_move[face][r] = (uint16_t) (rank_state(&next) % ORIENTATIONS);
+        }
+    }
+}
+
+/* Same as pdb_stats.c: BFS from rank 0 over one projection. */
+static uint16_t bfs(uint16_t n, const uint16_t *move, uint8_t *dist)
+{
+    uint16_t queue[PERMUTATIONS];
+    uint16_t head = 0, tail = 1;
+    memset(dist, 0xFF, n);
+    dist[0] = 0;
+    queue[0] = 0;
+    while (head < tail) {
+        uint16_t here = queue[head++];
+        for (uint8_t face = 0; face < 3; ++face) {
+            uint16_t next = here;
+            for (uint8_t turn = 0; turn < 3; ++turn) {
+                next = move[face * n + next];
+                if (dist[next] == 0xFF) {
+                    dist[next] = (uint8_t) (dist[here] + 1U);
+                    queue[tail++] = next;
+                }
+            }
+        }
+    }
+    return tail;
+}
+
+/* Print a [rows][cols] uint16_t table as a C initializer, 16 values per line. */
+static void emit_u16(const char *name, const uint16_t *values, unsigned rows, unsigned cols)
+{
+    printf("static const uint16_t %s[%u][%u] = {\n", name, rows, cols);
+    for (unsigned r = 0; r < rows; ++r) {
+        printf("    {");
+        for (unsigned c = 0; c < cols; ++c)
+            printf("%s%s%u", c ? "," : "", c % 16 == 0 ? "\n        " : "",
+                   (unsigned) values[r * cols + c]);
+        printf("\n    },\n");
+    }
+    printf("};\n\n");
+}
+
+/* Print a one-dimensional uint8_t table as a C initializer. */
+static void emit_u8(const char *name, const uint8_t *values, unsigned n)
+{
+    printf("static const uint8_t %s[%u] = {", name, n);
+    for (unsigned i = 0; i < n; ++i)
+        printf("%s%s%u", i ? "," : "", i % 32 == 0 ? "\n    " : "", (unsigned) values[i]);
+    printf("\n};\n\n");
+}
+
+int main(void)
+{
+    build_moves();
+    if (bfs(PERMUTATIONS, &perm_move[0][0], perm_dist) != PERMUTATIONS ||
+        bfs(ORIENTATIONS, &orient_move[0][0], orient_dist) != ORIENTATIONS) {
+        fputs("pattern-database BFS did not reach every state\n", stderr);
+        return 1;
+    }
+    puts("/* Generated by host/gen_tables.c. Do not edit by hand. */");
+    puts("#ifndef MINIRUBIK_TABLES_H");
+    puts("#define MINIRUBIK_TABLES_H\n");
+    puts("#include <stdint.h>\n");
+    emit_u16("perm_move", &perm_move[0][0], 3, PERMUTATIONS);
+    emit_u16("orient_move", &orient_move[0][0], 3, ORIENTATIONS);
+    emit_u8("perm_dist", perm_dist, PERMUTATIONS);
+    emit_u8("orient_dist", orient_dist, ORIENTATIONS);
+    puts("#endif");
+    return 0;
+}
