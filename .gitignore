@@ -8,3 +8,4 @@ host/pdb_stats
 host/ida_check
 host/gen_tables
 host/target_check
+build/
