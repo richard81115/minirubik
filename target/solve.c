@@ -38,12 +38,9 @@ static void parse_ranks(const char *input, uint16_t *p_out, uint16_t *o_out)
 {
     uint16_t p = 0, o = 0;
     for (uint8_t i = 0; i < 7; ++i) {
-        uint8_t smaller = 0;
         for (uint8_t j = (uint8_t) (i + 1U); j < 7; ++j)
-            if (input[j] < input[i])
-                ++smaller;
-        for (; smaller; --smaller)
-            p = (uint16_t) (p + factorial[i]);
+            if (input[j] < input[i]) 
+                p = (uint16_t) (p + factorial[i]);
     }
     for (uint8_t i = 7; i < 13; ++i)
         o = (uint16_t) ((o << 1) + o + (uint8_t) (input[i] - '1'));

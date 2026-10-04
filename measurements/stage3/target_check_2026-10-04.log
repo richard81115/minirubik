@@ -1,0 +1,18 @@
++ date -Iseconds
+2026-10-04T14:28:39+08:00
++ hostname
+DESKTOP-3G96U6R
++ cc --version
++ head -1
+cc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
++ cc -O2 -std=c99 -Wall -Wextra -Wpedantic host/target_check.c -o host/target_check
++ /usr/bin/time -f 'elapsed_s=%e maxrss_kb=%M exit=%x' ./host/target_check
+perm_dist: max 7, solved entry 0
+orient_dist: max 6, solved entry 0
+H2 table errors: 0
+full BFS with generated tables: 3674160 states reached
+parser errors: 0
+H3 over 3674160 states: 0 wrong lengths, 0 paths not reaching solved
+H3 CPU time: 189.8 s
+distance-11 nodes: 2644 states, max 639798 (54721631111111), mean 206625
+elapsed_s=189.89 maxrss_kb=20000 exit=0
