@@ -1,22 +1,75 @@
 .data
     .align 2
-
     perm_rows:
         .word perm_move_0, perm_move_1, perm_move_2
     orient_rows:
         .word orient_move_0, orient_move_1, orient_move_2
     records:
         .zero 144
+    input:
+        .string "21345671111111"
+
+        .align 1
+    factorial:
+        .half 720, 120, 24, 6, 2, 1, 1
 
 .text
+# finding permutation rank
+    li a1, 0
+    la t0, input # 外層指標
+    la t2, factorial #factorial 指標
+    addi t6, t0, 7 # ending position
+    
+outer_loop:
+    lbu t1, 0(t0) # input[i]
+    lhu t3, 0(t2) # factorail[i]
+    addi t4, t0, 1 # 內層指標
+    lbu t5, 0(t4) # input[j]
+
+inner_loop:
+    beq t4, t6, inner_done # whether j equals 7
+    bgeu t5, t1, inputJ_greater_than_inputI
+    add a1, a1, t3 # p += factorial[i]
+inputJ_greater_than_inputI:
+    addi t4 ,t4, 1
+    lbu t5, 0(t4)
+    j inner_loop
+
+inner_done:
+    addi t0, t0, 1 
+    addi t2, t2, 2 # reset factorial[i]
+    bne t0, t6, outer_loop
+
+# finding orientation rank
+    li a2, 0
+    la t0, input
+    addi t6, t0, 13 # ending position
+    addi t0, t0, 7 # start position
+
+loop_start:
+    beq t0, t6, loop_done
+
+    lbu t5, 0(t0)
+    addi t5, t5, -49
+    slli t3, a2, 1
+    add t3, t3, a2
+    add a2, t3, t5
+    addi t0, t0, 1
+    
+    j loop_start
+    
+loop_done:
+    
+    
+    
+    
     la s1, records
     la s5, perm_rows
     la s6, orient_rows
     la s7, perm_dist
     la s8, orient_dist
 
-    li a1, 720 # permutation rank
-    li a2, 0 # orientation rank
+
     li a3, 3 # constant 3
 
     add t0, s7, a1
