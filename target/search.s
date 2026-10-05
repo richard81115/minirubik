@@ -10,9 +10,6 @@
 
 .text
     la s1, records
-    mv s0, s1
-    li s3, 255
-    li s4, 0
     la s5, perm_rows
     la s6, orient_rows
     la s7, perm_dist
@@ -22,6 +19,27 @@
     li a2, 0 # orientation rank
     li a3, 3 # constant 3
 
+    add t0, s7, a1
+    add t1, s8, a2
+    lbu t2, 0(t0)
+    lbu t3, 0(t1)
+    
+    bltu t2, t3, set_orient_as_bigger
+    mv s2, t2
+    bne s2, x0, round_start # check if already solved
+    j end_program
+
+set_orient_as_bigger:
+    mv s2, t3
+
+    bne s2, x0, round_start # check if already solved
+    j end_program
+
+round_start:
+    mv s0, s1
+    li s3, 255
+    li s4, 0
+
     sh a1, 0(s0) # level_p
     sh a2, 2(s0) # level_o
     sh a1, 4(s0) # chain_p
@@ -29,22 +47,6 @@
     sb x0, 8(s0) # level_face
     sb x0, 9(s0) # level_turn
     sb a3, 10(s0) # level_prev
-
-    add t0, s7, a1
-    add t1, s8, a2
-    lbu t2, 0(t0)
-    lbu t3, 0(t1)
-
-    
-    bltu t2, t3, set_orient_as_bigger
-    mv s2, t2
-    j bound_ready
-
-set_orient_as_bigger:
-    mv s2, t3
-
-bound_ready:
-    li s2, 11 # for test    
 
 next_child:
     lbu t0, 8(s0) # 從記錄讀出 level_face（位移 8）
@@ -156,6 +158,11 @@ found:
     ecall
 
 not_found:
-    mv a0, x0
+    mv s2, s3
+    j round_start
+
+
+end_program:
+    li a0, 0
     li a7, 93
     ecall

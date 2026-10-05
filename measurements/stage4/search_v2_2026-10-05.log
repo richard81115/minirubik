@@ -1,0 +1,11 @@
++ date -Iseconds
+2026-10-05T11:19:15+08:00
++ hostname
+DESKTOP-3G96U6R
++ cat target/tables.s target/search.s
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/search_full.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 11
+===== instructions retired
+10929240
