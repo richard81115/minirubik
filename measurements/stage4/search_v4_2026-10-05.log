@@ -1,0 +1,40 @@
++ date -Iseconds
+2026-10-05T14:23:16+08:00
++ hostname
+DESKTOP-3G96U6R
++ for s in 12345671111111 62345713133111 21345671111111 54721631111111
++ sed s/21345671111111/12345671111111/ target/search.s
++ cat target/tables.s build/search_12345671111111.s
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/search_full_12345671111111.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+243
++ for s in 12345671111111 62345713133111 21345671111111 54721631111111
++ sed s/21345671111111/62345713133111/ target/search.s
++ cat target/tables.s build/search_62345713133111.s
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/search_full_62345713133111.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 8
+===== instructions retired
+67340
++ for s in 12345671111111 62345713133111 21345671111111 54721631111111
++ sed s/21345671111111/21345671111111/ target/search.s
++ cat target/tables.s build/search_21345671111111.s
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/search_full_21345671111111.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 11
+===== instructions retired
+10929809
++ for s in 12345671111111 62345713133111 21345671111111 54721631111111
++ sed s/21345671111111/54721631111111/ target/search.s
++ cat target/tables.s build/search_54721631111111.s
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/search_full_54721631111111.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 11
+===== instructions retired
+29883466

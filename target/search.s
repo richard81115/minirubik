@@ -205,15 +205,60 @@ store_0_to_level_face:
     j next_child
 
 found:
-    addi t0, s4, 1
-    mv a0, t0
-    li a7, 93
-    ecall
+    mv t0, s1
+    addi t6, s4, 1
+
+verify_loop:
+    beq t6, x0, verify_check
+    lbu t1, 11(t0)
+    li t2, 0 #face
+    li t3, 3 # constant 3 for comparison
+    bltu t1, t3, decode_done
+    li t2, 1
+    addi t1, t1, -3
+    bltu t1, t3, decode_done
+    li t2, 2
+    addi t1, t1, -3
+    decode_done:
+        slli a4, t2, 2
+        add t5, s5, a4
+        lw t5, 0(t5)
+        add t4, s6, a4
+        lw t4, 0(t4)
+
+        addi t1, t1, 1
+        
+    apply_loop:
+        slli a1, a1, 1
+        add a1, a1, t5
+        lhu a1, 0(a1)
+        slli a2, a2, 1
+        add a2, a2, t4
+        lhu a2, 0(a2)
+
+        addi t1, t1, -1
+        bne t1, zero, apply_loop
+
+    addi t0, t0, 12
+    addi t6, t6, -1
+    j verify_loop
+
+verify_check:
+    bne a1, zero, exit_with_255
+    bne a2, zero, exit_with_255
+    addi a0, s4, 1
+    j exit
+        
+    exit_with_255:
+        li a0, 255
+    exit:
+        li a7, 93
+        ecall
 
 not_found:
     mv s2, s3
     j round_start
-
+    
 
 end_program:
     li a0, 0
