@@ -1,0 +1,63 @@
++ date -Iseconds
+2026-10-05T17:01:33+08:00
++ hostname
+DESKTOP-3G96U6R
++ riscv64-unknown-elf-gcc --version
++ head -1
+riscv64-unknown-elf-gcc (14.2.0+19) 14.2.0
++ for s in 21345671111111 54721631111111
++ riscv64-unknown-elf-gcc -O2 -march=rv32i -mabi=ilp32 -std=c99 -Wall -Wextra -Wpedantic -ffreestanding -nostdlib -mno-relax -Wl,--no-relax '-DINPUT="21345671111111"' target/start.s target/ref_main.c -o build/ref_21345671111111.elf
+/usr/lib/gcc/riscv64-unknown-elf/14.2.0/../../../riscv64-unknown-elf/bin/ld: warning: build/ref_21345671111111.elf has a LOAD segment with RWX permissions
++ riscv64-unknown-elf-size -A build/ref_21345671111111.elf
+build/ref_21345671111111.elf  :
+section              size     addr
+.text                1020    65684
+.rodata             40444    66704
+.sdata                  3   111244
+.bss                  144   111248
+.comment               24        0
+.riscv.attributes      28        0
+Total               41663
+
+
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/ref_21345671111111.elf -t elf --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+R B' D2 R' B R' B' R D2 R B
+
+Program exited with code: 11
+===== instructions retired
+12838778
++ for s in 21345671111111 54721631111111
++ riscv64-unknown-elf-gcc -O2 -march=rv32i -mabi=ilp32 -std=c99 -Wall -Wextra -Wpedantic -ffreestanding -nostdlib -mno-relax -Wl,--no-relax '-DINPUT="54721631111111"' target/start.s target/ref_main.c -o build/ref_54721631111111.elf
+/usr/lib/gcc/riscv64-unknown-elf/14.2.0/../../../riscv64-unknown-elf/bin/ld: warning: build/ref_54721631111111.elf has a LOAD segment with RWX permissions
++ riscv64-unknown-elf-size -A build/ref_54721631111111.elf
+build/ref_54721631111111.elf  :
+section              size     addr
+.text                1020    65684
+.rodata             40444    66704
+.sdata                  3   111244
+.bss                  144   111248
+.comment               24        0
+.riscv.attributes      28        0
+Total               41663
+
+
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/ref_54721631111111.elf -t elf --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+B2 R' B R' D' B R2 B R B D'
+
+Program exited with code: 11
+===== instructions retired
+35104689
++ riscv64-unknown-elf-as -march=rv32i -mabi=ilp32 -mno-relax build/search_full_21345671111111.s -o build/search.o
++ riscv64-unknown-elf-ld -m elf32lriscv --no-relax build/search.o -o build/search.elf
+riscv64-unknown-elf-ld: warning: cannot find entry symbol _start; defaulting to 00010094
++ riscv64-unknown-elf-size -A build/search.elf
+build/search.elf  :
+section              size    addr
+.text                 872   65684
+.data               40588   69632
+.riscv.attributes      26       0
+Total               41486
+
+
