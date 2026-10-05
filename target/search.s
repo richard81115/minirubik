@@ -74,7 +74,6 @@ loop_done:
     la s7, perm_dist
     la s8, orient_dist
 
-
     li a3, 3 # constant 3
 
     add t0, s7, a1
@@ -108,8 +107,7 @@ round_start:
 
 next_child:
     lbu t0, 8(s0) # 從記錄讀出 level_face（位移 8）
-    addi t4, x0, 3
-    bltu t0, t4, level_face_not_yet_three
+    bltu t0, a3, level_face_not_yet_three
 
     beq s0, s1, not_found
     addi s0, s0, -12
@@ -145,8 +143,7 @@ level_face_not_yet_three:
     sb t2, 11(s0)
 
     addi t0, t0, 1 # ++level_turn
-    addi t2, x0, 3
-    bne t0, t2, not_three_yet # 轉數還不到 3，跳走 
+    bne t0, a3, not_three_yet # 轉數還不到 3，跳走 
     
 to_next_face:
     addi t1, t1, 1 # next_face

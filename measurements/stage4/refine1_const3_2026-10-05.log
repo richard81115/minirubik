@@ -1,0 +1,55 @@
++ date -Iseconds
+2026-10-05T17:12:09+08:00
++ hostname
+DESKTOP-3G96U6R
++ for s in 12345671111111 62345713133111 21345671111111 54721631111111
++ sed s/21345671111111/12345671111111/ target/search.s
++ cat target/tables.s build/search_12345671111111.s
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/search_full_12345671111111.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+
+Program exited with code: 0
+===== instructions retired
+243
++ for s in 12345671111111 62345713133111 21345671111111 54721631111111
++ sed s/21345671111111/62345713133111/ target/search.s
++ cat target/tables.s build/search_62345713133111.s
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/search_full_62345713133111.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+R2 D B2 R' D R' D B'
+
+Program exited with code: 8
+===== instructions retired
+64482
++ for s in 12345671111111 62345713133111 21345671111111 54721631111111
++ sed s/21345671111111/21345671111111/ target/search.s
++ cat target/tables.s build/search_21345671111111.s
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/search_full_21345671111111.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+R B' D2 R' B R' B' R D2 R B
+
+Program exited with code: 11
+===== instructions retired
+10423216
++ for s in 12345671111111 62345713133111 21345671111111 54721631111111
++ sed s/21345671111111/54721631111111/ target/search.s
++ cat target/tables.s build/search_54721631111111.s
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/search_full_54721631111111.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+B2 R' B R' D' B R2 B R B D'
+
+Program exited with code: 11
+===== instructions retired
+28497577
++ riscv64-unknown-elf-as -march=rv32i -mabi=ilp32 -mno-relax build/search_full_21345671111111.s -o build/search.o
++ riscv64-unknown-elf-ld -m elf32lriscv --no-relax build/search.o -o build/search.elf
+riscv64-unknown-elf-ld: warning: cannot find entry symbol _start; defaulting to 00010094
++ riscv64-unknown-elf-size -A build/search.elf
+build/search.elf  :
+section              size    addr
+.text                 864   65684
+.data               40588   69632
+.riscv.attributes      26       0
+Total               41478
+
+
