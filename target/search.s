@@ -13,6 +13,11 @@
     factorial:
         .half 720, 120, 24, 6, 2, 1, 1
 
+    face_letters: # printing R, B, D
+        .byte 82, 66, 68
+    turn_letters: # printing blank, 2, '
+        .byte 32, 50, 39
+
 .text
 # finding permutation rank
     li a1, 0
@@ -211,7 +216,7 @@ found:
 verify_loop:
     beq t6, x0, verify_check
     lbu t1, 11(t0)
-    li t2, 0 #face
+    li t2, 0 # face
     li t3, 3 # constant 3 for comparison
     bltu t1, t3, decode_done
     li t2, 1
@@ -246,12 +251,64 @@ verify_loop:
 verify_check:
     bne a1, zero, exit_with_255
     bne a2, zero, exit_with_255
-    addi a0, s4, 1
-    j exit
+    j print_path
         
     exit_with_255:
         li a0, 255
-    exit:
+        li a7, 93
+        ecall
+
+    print_path:
+        mv t0, s1
+        addi t6, s4, 1
+
+    print_loop:
+        beq t6, x0, print_done
+        lbu t1, 11(t0)
+        li t2, 0 # face
+        li t3, 3 # constant 3 for comparison
+        la t4, face_letters
+        la t5, turn_letters
+        
+        bltu t1, t3, print_out
+        li t2, 1
+        addi t1, t1, -3
+        bltu t1, t3, print_out
+        li t2, 2
+        addi t1, t1, -3
+ 
+        print_out:
+            add t4, t4, t2
+            lbu t4, 0(t4)
+            mv a0, t4
+            li a7, 11
+            ecall
+
+            beq t1, x0, label_for_turn_equals_zero
+            add t5, t5, t1
+            lbu t5, 0(t5)
+            mv a0, t5
+            li a7, 11
+            ecall
+            
+            label_for_turn_equals_zero:
+            addi t0, t0, 12
+            addi t6, t6, -1
+            beq t6, x0, print_loop
+            
+            # if t6 not zero print blank
+            la a0, turn_letters
+            lbu a0, 0(a0)
+            li a7, 11
+            ecall
+            j print_loop
+
+
+    print_done:
+        li a0, 10
+        li a7, 11
+        ecall
+        addi a0, s4, 1
         li a7, 93
         ecall
 
