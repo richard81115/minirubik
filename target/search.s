@@ -398,6 +398,20 @@ not_found:
     j round_start
 
 end_program:
+# RENDER_BEGIN
+    # Draw the solved cube only if the net fits.
+    li t0, LED_MATRIX_0_WIDTH
+    li t1, 35
+    bltu t0, t1, solved_exit
+
+    li t0, LED_MATRIX_0_HEIGHT
+    li t1, 20
+    bltu t0, t1, solved_exit
+
+    jal ra, draw_cube
+
+solved_exit:
+# RENDER_END
     li a0, 0
     li a7, 93
     ecall

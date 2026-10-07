@@ -10,3 +10,5 @@ host/gen_tables
 host/target_check
 build/
 host/list_d11
+
+host/scramble
