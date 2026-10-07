@@ -514,34 +514,5 @@ draw_address_ready:
     bne t4, a3, draw_loop
 
     ret
-    
-is_zero:
-    add t5, t5, t0
-    
-    add t6, t1, t4
-    lbu t6, 0(t6)
-    slli t6, t6, 2
-    add t6, t2, t6
-    lw t6, 0(t6)
-
-    sw t6, 0(t5)
-    sw t6, 4(t5)
-    sw t6, 8(t5)
-    sw t6, 12(t5)
-    sw t6, 140(t5)
-    sw t6, 144(t5)
-    sw t6, 148(t5)
-    sw t6, 152(t5)
-    sw t6, 280(t5)
-    sw t6, 284(t5)
-    sw t6, 288(t5)
-    sw t6, 292(t5)
-    
-
-    addi t4, t4, 1
-    li a3, 24
-    bne t4, a3, draw_loop
-    
-    ret
 
 # RENDER_END
