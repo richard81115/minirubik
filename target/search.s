@@ -323,6 +323,15 @@ print_done:
     ecall
 
 # RENDER_BEGIN
+    # Skip animation if the unfolded net does not fit.
+    li t0, LED_MATRIX_0_WIDTH
+    li t1, 35
+    bltu t0, t1, anim_done
+
+    li t0, LED_MATRIX_0_HEIGHT
+    li t1, 20
+    bltu t0, t1, anim_done
+
     mv s9, s0
 
 rev_loop:
