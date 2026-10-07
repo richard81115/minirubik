@@ -26,7 +26,12 @@ turn_letters: # printing blank, 2, '
 face_color: # 白橙綠紅藍黃
     .word 0xFFFFFF, 0xFFA500, 0x00FF00, 0xFF0000, 0x0000FF, 0xFFFF00
 face_origin:
-    .word 36, 980, 1016, 1052, 1088, 1996
+    .byte  9,  0    # U
+    .byte  0,  7    # L
+    .byte  9,  7    # F
+    .byte 18,  7    # R
+    .byte 27,  7    # B
+    .byte  9, 14    # D
 facelets:
     .byte 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5
 turn_cycles:
@@ -427,19 +432,88 @@ draw_cube:
     la t1, facelets
     la t2, face_color
     la t3, face_origin
-    li t4, 0
+
+    li a0, LED_MATRIX_0_WIDTH
+    slli a0, a0, 2          # a0 = 4W
+
+    slli a1, a0, 1         # a1 = 8W
+    add a1, a1, a0         # a1 = 12W
+
+    li a2, 7
+    li t4, 0               # Facelet index
 
 draw_loop:
-    andi a3, t4, -4
-    add a3, a3, t3
-    lw t5, 0(a3)
+    # Each face has four facelets and two coordinate bytes.
+    srli a3, t4, 2         # Face index
+    slli a3, a3, 1         # Face index * 2
+    add a3, t3, a3
+
+    lbu a4, 1(a3)          # y
+    lbu a3, 0(a3)          # x
+
+    # Row offset: 4 * W * y.
+    # This layout uses only y = 0, 7, or 14.
+    beq a4, x0, draw_y_zero
+
+    slli t5, a0, 3         # 32W
+    sub t5, t5, a0         # 28W
+    beq a4, a2, draw_y_ready
+
+    slli t5, t5, 1         # 56W for y = 14
+    j draw_y_ready
+
+draw_y_zero:
+    li t5, 0
+
+draw_y_ready:
+    slli a3, a3, 2         # 4x
+    add t5, t5, a3         # Face origin byte offset
+
+    # Position within the face: 0, 1, 2, or 3.
     andi a4, t4, 3
-    andi a5, a4, 1 
-    slli a5, a5, 4 # column * 16
+    andi a5, a4, 1
+    slli a5, a5, 4         # Right column: +16 bytes
     add t5, t5, a5
-    srli a4, a4, 1 # row
-    beq a4, x0, is_zero
-    addi t5, t5, 420
+
+    srli a4, a4, 1
+    beq a4, x0, draw_address_ready
+    add t5, t5, a1         # Lower row: +12W bytes
+
+draw_address_ready:
+    add t5, t5, t0         # Absolute pixel address
+
+    # Load the RGB color for this facelet.
+    add t6, t1, t4
+    lbu t6, 0(t6)
+    slli t6, t6, 2
+    add t6, t2, t6
+    lw t6, 0(t6)
+
+    # First pixel row.
+    sw t6, 0(t5)
+    sw t6, 4(t5)
+    sw t6, 8(t5)
+    sw t6, 12(t5)
+
+    # Second pixel row.
+    add t5, t5, a0
+    sw t6, 0(t5)
+    sw t6, 4(t5)
+    sw t6, 8(t5)
+    sw t6, 12(t5)
+
+    # Third pixel row.
+    add t5, t5, a0
+    sw t6, 0(t5)
+    sw t6, 4(t5)
+    sw t6, 8(t5)
+    sw t6, 12(t5)
+
+    addi t4, t4, 1
+    li a3, 24
+    bne t4, a3, draw_loop
+
+    ret
     
 is_zero:
     add t5, t5, t0
