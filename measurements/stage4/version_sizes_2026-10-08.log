@@ -1,0 +1,100 @@
++ date -Iseconds
+2026-10-08T00:01:09+08:00
++ riscv64-unknown-elf-as --version
++ head -n 1
+GNU assembler (2.45.50.20251209-1ubuntu1+7build1) 2.45.50.20251209
++ for item in v1:4ce3946 v2:eecf1a9 v3:eafa3f0 v4:0d1be44 v5:0e5658c
++ version=v1
++ revision=4ce3946
++ prefix=build/version_sizes/v1
++ git rev-parse 4ce3946
+4ce3946f6d79176f12bdaac34f5ef5e27f9da982
++ git show 4ce3946:target/tables.s
++ git show 4ce3946:target/search.s
++ riscv64-unknown-elf-as -march=rv32i -mabi=ilp32 -mno-relax build/version_sizes/v1.s -o build/version_sizes/v1.o
++ riscv64-unknown-elf-ld -m elf32lriscv --no-relax -e 0 build/version_sizes/v1.o -o build/version_sizes/v1.elf
++ riscv64-unknown-elf-size -A build/version_sizes/v1.elf
+build/version_sizes/v1.elf  :
+section              size    addr
+.text                 444   65684
+.data               40552   69632
+.riscv.attributes      26       0
+Total               41022
+
+
++ for item in v1:4ce3946 v2:eecf1a9 v3:eafa3f0 v4:0d1be44 v5:0e5658c
++ version=v2
++ revision=eecf1a9
++ prefix=build/version_sizes/v2
++ git rev-parse eecf1a9
+eecf1a93ff8dc8fad59a875eaf412edf2c18f864
++ git show eecf1a9:target/tables.s
++ git show eecf1a9:target/search.s
++ riscv64-unknown-elf-as -march=rv32i -mabi=ilp32 -mno-relax build/version_sizes/v2.s -o build/version_sizes/v2.o
++ riscv64-unknown-elf-ld -m elf32lriscv --no-relax -e 0 build/version_sizes/v2.o -o build/version_sizes/v2.elf
++ riscv64-unknown-elf-size -A build/version_sizes/v2.elf
+build/version_sizes/v2.elf  :
+section              size    addr
+.text                 460   65684
+.data               40552   69632
+.riscv.attributes      26       0
+Total               41038
+
+
++ for item in v1:4ce3946 v2:eecf1a9 v3:eafa3f0 v4:0d1be44 v5:0e5658c
++ version=v3
++ revision=eafa3f0
++ prefix=build/version_sizes/v3
++ git rev-parse eafa3f0
+eafa3f035f233483fdf11fb2f1f909970bcd7029
++ git show eafa3f0:target/tables.s
++ git show eafa3f0:target/search.s
++ riscv64-unknown-elf-as -march=rv32i -mabi=ilp32 -mno-relax build/version_sizes/v3.s -o build/version_sizes/v3.o
++ riscv64-unknown-elf-ld -m elf32lriscv --no-relax -e 0 build/version_sizes/v3.o -o build/version_sizes/v3.elf
++ riscv64-unknown-elf-size -A build/version_sizes/v3.elf
+build/version_sizes/v3.elf  :
+section              size    addr
+.text                 580   65684
+.data               40582   69632
+.riscv.attributes      26       0
+Total               41188
+
+
++ for item in v1:4ce3946 v2:eecf1a9 v3:eafa3f0 v4:0d1be44 v5:0e5658c
++ version=v4
++ revision=0d1be44
++ prefix=build/version_sizes/v4
++ git rev-parse 0d1be44
+0d1be44bc0b4943f1ae37ae9f63804e3d0559b0f
++ git show 0d1be44:target/tables.s
++ git show 0d1be44:target/search.s
++ riscv64-unknown-elf-as -march=rv32i -mabi=ilp32 -mno-relax build/version_sizes/v4.s -o build/version_sizes/v4.o
++ riscv64-unknown-elf-ld -m elf32lriscv --no-relax -e 0 build/version_sizes/v4.o -o build/version_sizes/v4.elf
++ riscv64-unknown-elf-size -A build/version_sizes/v4.elf
+build/version_sizes/v4.elf  :
+section              size    addr
+.text                 708   65684
+.data               40582   69632
+.riscv.attributes      26       0
+Total               41316
+
+
++ for item in v1:4ce3946 v2:eecf1a9 v3:eafa3f0 v4:0d1be44 v5:0e5658c
++ version=v5
++ revision=0e5658c
++ prefix=build/version_sizes/v5
++ git rev-parse 0e5658c
+0e5658cde32a78069b6bca0803a3d0c003110c95
++ git show 0e5658c:target/tables.s
++ git show 0e5658c:target/search.s
++ riscv64-unknown-elf-as -march=rv32i -mabi=ilp32 -mno-relax build/version_sizes/v5.s -o build/version_sizes/v5.o
++ riscv64-unknown-elf-ld -m elf32lriscv --no-relax -e 0 build/version_sizes/v5.o -o build/version_sizes/v5.elf
++ riscv64-unknown-elf-size -A build/version_sizes/v5.elf
+build/version_sizes/v5.elf  :
+section              size    addr
+.text                 872   65684
+.data               40588   69632
+.riscv.attributes      26       0
+Total               41486
+
+

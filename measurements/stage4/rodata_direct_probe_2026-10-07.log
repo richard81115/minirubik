@@ -1,0 +1,8 @@
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/rodata_direct_probe.s -t asm --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+ERROR: Error during assembly:
+INFO: Unknown directive '.rodata'
+INFO: Instruction misaligned (24-bit boundary). This instruction must be aligned on a 32-bit boundary.
++ result=1
++ printf 'shell exit status: %s\n' 1
+shell exit status: 1

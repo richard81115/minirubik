@@ -1,0 +1,23 @@
++ date -Iseconds
+2026-10-07T23:19:34+08:00
++ git rev-parse HEAD
+cde8d3a1d7ca0e8730fe22daef5d12c9b805cc30
++ gcc --version
++ head -1
+gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
++ gcc -O2 -std=c99 -Wall -Wextra -Wpedantic host/h2_check.c -o build/h2_check
+In file included from host/h2_check.c:3:
+host/../solver.c: In function ‘unrank_state’:
+host/../solver.c:133:36: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+  133 |         for (uint8_t j = q; j + 1U < CUBIES - i; ++j)
+      |                                    ^
++ ./build/h2_check
+perm_move[0]: max=5039, solved=1104, expected_solved=1104, errors=0
+perm_move[1]: max=5039, solved=9, expected_solved=9, errors=0
+perm_move[2]: max=5039, solved=198, expected_solved=198, errors=0
+orient_move[0]: max=728, solved=426, expected_solved=426, errors=0
+orient_move[1]: max=728, solved=16, expected_solved=16, errors=0
+orient_move[2]: max=728, solved=0, expected_solved=0, errors=0
+perm_dist: max=7, expected_max=7, solved=0, errors=0
+orient_dist: max=6, expected_max=6, solved=0, errors=0
+H2 total errors: 0

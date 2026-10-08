@@ -1,39 +1,66 @@
 #!/usr/bin/env bash
-# T7: run the test cases on RV32_ISS and RV32_5S with the CLI build of
-# target/search.s (RENDER blocks stripped). Raw Ripes output is kept under
-# measurements/t7/raw/.
-# Prints one line per run: "input|proc|exit_code|iret|cycles|cpi|solution".
-set -u
+# Run renderer-free ELF builds on ISS and a pipeline model.
+# Output: input|proc|exit_code|iret|cycles|cpi|solution
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
 RIPES=${RIPES:-$HOME/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage}
-CASES=${CASES:-"12345671111111 62345713133111 21345671111111 54721631111111"}
+CASES=${CASES:-"12345671111111 25371462312233 62345713133111 21345671111111 54721631111111"}
 PROCS=${PROCS:-"RV32_ISS RV32_5S"}
-OUT=measurements/t7/raw
-mkdir -p build/t7 "$OUT"
-CLI_SRC=build/search_cli.s
-awk '/^# RENDER_BEGIN/ { skip = 1; next } /^# RENDER_END/ { skip = 0; next } !skip' \
-    target/search.s > "$CLI_SRC"
-if grep -q 'LED_MATRIX' "$CLI_SRC"; then
-    echo "error: RENDER blocks were not stripped from $CLI_SRC" >&2
-    exit 1
-fi
-export RIPES CLI_SRC OUT
+OUT=${OUT:-measurements/t7/readonly_raw}
+mkdir -p build/t7_elf "$OUT"
+export RIPES OUT
 
 run_one() {
-    s=$1
-    proc=$2
-    src=build/t7/search_${s}_$proc.s
-    raw=$OUT/${s}_$proc.txt
-    sed "s/21345671111111/$s/" "$CLI_SRC" | cat target/tables.s - > "$src"
-    "$RIPES" --mode cli --src "$src" -t asm --proc "$proc" \
-        --cycles --iret --cpi > "$raw" 2>/dev/null
+    local s=$1 proc=$2
+    local elf="build/t7_elf/search_${s}_$proc.elf"
+    local raw="$OUT/${s}_$proc.txt"
+    local code cycles iret cpi sol expected
+
+    if ! bash host/build_target.sh "$s" "$elf" cli \
+        > "$elf.build.log" 2>&1; then
+        echo "build failed: $s $proc; see $elf.build.log" >&2
+        return 1
+    fi
+
+    if ! "$RIPES" --mode cli --src "$elf" -t elf --proc "$proc" \
+        --cycles --iret --cpi > "$raw" 2> "$raw.stderr"; then
+        echo "Ripes failed: $s $proc; see $raw.stderr" >&2
+        return 1
+    fi
+
     code=$(sed -n 's/^Program exited with code: //p' "$raw")
     cycles=$(sed -n '/^===== cycles$/{n;p;}' "$raw")
     iret=$(sed -n '/^===== instructions retired$/{n;p;}' "$raw")
     cpi=$(sed -n '/^===== cycles per instruction/{n;p;}' "$raw")
     sol=$(sed -n '/^Program exited/q;/./p' "$raw" | head -n 1)
-    printf '%s|%s|%s|%s|%s|%s|%s\n' "$s" "$proc" "${code:-NA}" "${iret:-NA}" \
+
+    printf '%s|%s|%s|%s|%s|%s|%s\n' \
+        "$s" "$proc" "${code:-NA}" "${iret:-NA}" \
         "${cycles:-NA}" "${cpi:-NA}" "${sol:--}"
-    rm -f "$src"
+
+    case "$s" in
+        12345671111111) expected=0 ;;
+        25371462312233) expected=2 ;;
+        62345713133111) expected=8 ;;
+        21345671111111|54721631111111) expected=11 ;;
+        *) expected="" ;;
+    esac
+
+    if [[ ! "$code" =~ ^[0-9]+$ ||
+          ! "$iret" =~ ^[1-9][0-9]*$ ||
+          ! "$cycles" =~ ^[1-9][0-9]*$ ]]; then
+        echo "missing or invalid counters: $s $proc" >&2
+        return 1
+    fi
+    if (( code > 11 )); then
+        echo "invalid solution length: $s $proc" >&2
+        return 1
+    fi
+    if [[ -n "$expected" && "$code" != "$expected" ]]; then
+        echo "wrong solution length: $s $proc" >&2
+        return 1
+    fi
 }
 export -f run_one
 
@@ -41,4 +68,5 @@ for s in $CASES; do
     for p in $PROCS; do
         printf '%s %s\n' "$s" "$p"
     done
-done | xargs -P "${JOBS:-8}" -n 2 bash -c 'run_one "$1" "$2"' _ | sort
+done | xargs -P "${JOBS:-6}" -n 2 \
+    bash -c 'run_one "$1" "$2"' _ | sort

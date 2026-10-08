@@ -1,0 +1,9 @@
+B R'
+
+Program exited with code: 2
+===== cycles
+687
+===== instructions retired
+687
+===== cycles per instruction (CPI)
+1

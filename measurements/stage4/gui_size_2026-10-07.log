@@ -1,0 +1,16 @@
++ date -Iseconds
+2026-10-07T23:10:24+08:00
++ git rev-parse HEAD
+cde8d3a1d7ca0e8730fe22daef5d12c9b805cc30
++ cat target/tables.s target/search.s
++ riscv64-unknown-elf-as -march=rv32i -mabi=ilp32 -mno-relax --defsym LED_MATRIX_0_BASE=0xF0000000 --defsym LED_MATRIX_0_WIDTH=35 --defsym LED_MATRIX_0_HEIGHT=25 build/gui_size.s -o build/gui_size.o
++ riscv64-unknown-elf-ld -m elf32lriscv --no-relax -e 0 build/gui_size.o -o build/gui_size.elf
++ riscv64-unknown-elf-size -A build/gui_size.elf
+build/gui_size.elf  :
+section              size    addr
+.text                1416   65684
+.data               40684   69632
+.riscv.attributes      26       0
+Total               42126
+
+

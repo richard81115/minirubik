@@ -1,30 +1,50 @@
 #!/usr/bin/env bash
-# Run the CLI build of target/search.s (RENDER blocks stripped) on every
-# input in a list on RV32_ISS.
-# Prints one line per input: "input exit_code retired_instructions".
-set -u
+# Run the renderer-free, read-only-table ELF on every listed input.
+# Output: input exit_code retired_instructions
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
 RIPES=${RIPES:-$HOME/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage}
 LIST=${1:-measurements/stage4/d11_inputs.txt}
 JOBS=${JOBS:-6}
-mkdir -p build/d11
-CLI_SRC=build/search_cli.s
-awk '/^# RENDER_BEGIN/ { skip = 1; next } /^# RENDER_END/ { skip = 0; next } !skip' \
-    target/search.s > "$CLI_SRC"
-if grep -q 'LED_MATRIX' "$CLI_SRC"; then
-    echo "error: RENDER blocks were not stripped from $CLI_SRC" >&2
-    exit 1
-fi
-export RIPES CLI_SRC
+mkdir -p build/d11_elf
+export RIPES
 
 run_one() {
-    s=$1
-    src=build/d11/search_$s.s
-    sed "s/21345671111111/$s/" "$CLI_SRC" | cat target/tables.s - > "$src"
-    out=$("$RIPES" --mode cli --src "$src" -t asm --proc RV32_ISS --iret 2>/dev/null)
-    code=$(printf '%s\n' "$out" | sed -n 's/^Program exited with code: //p')
-    iret=$(printf '%s\n' "$out" | sed -n '/instructions retired/{n;p;}')
+    local s=$1
+    local elf="build/d11_elf/search_$s.elf"
+    local code iret
+
+    if ! bash host/build_target.sh "$s" "$elf" cli \
+        > "$elf.build.log" 2>&1; then
+        echo "build failed: $s; see $elf.build.log" >&2
+        printf '%s NA NA\n' "$s"
+        return 1
+    fi
+
+    if ! "$RIPES" --mode cli --src "$elf" -t elf \
+        --proc RV32_ISS --iret > "$elf.stdout" 2> "$elf.stderr"; then
+        echo "Ripes failed: $s; see $elf.stderr" >&2
+        printf '%s NA NA\n' "$s"
+        return 1
+    fi
+
+    code=$(sed -n 's/^Program exited with code: //p' "$elf.stdout")
+    iret=$(sed -n '/^===== instructions retired$/{n;p;}' "$elf.stdout")
     printf '%s %s %s\n' "$s" "${code:-NA}" "${iret:-NA}"
-    rm -f "$src"
+
+    if [[ "$code" != 11 || ! "$iret" =~ ^[1-9][0-9]*$ ]]; then
+        echo "invalid result: $s; evidence retained in build/d11_elf" >&2
+        return 1
+    fi
+    if (( iret > 50000000 )); then
+        echo "instruction budget exceeded: $s" >&2
+        return 1
+    fi
+
+    rm -f "$elf" "$elf.s" "$elf.o" \
+        "$elf.build.log" "$elf.stdout" "$elf.stderr"
 }
 export -f run_one
+
 xargs -P "$JOBS" -I{} bash -c 'run_one "$1"' _ {} < "$LIST"

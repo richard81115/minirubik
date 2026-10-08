@@ -1,0 +1,9 @@
+2026-10-07T23:39:25+08:00
+cde8d3a1d7ca0e8730fe22daef5d12c9b805cc30
+elapsed_s=413.57 exit=0
+States checked: 2644
+All exit codes: 11
+Maximum iret: 28497577 (54721631111111)
+Mean iret: 9193012.72
+Required vector iret: 10423216
+Distance-11 gate: PASS

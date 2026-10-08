@@ -1,0 +1,35 @@
++ date -Iseconds
+2026-10-07T23:26:38+08:00
++ for case_input in 25371462312233 21345671111111 54721631111111
++ sed 's/"12345671111111"/"25371462312233"/' build/rodata_elf_probe.s
++ riscv64-unknown-elf-as -march=rv32i -mabi=ilp32 -mno-relax build/rodata_25371462312233.s -o build/rodata_25371462312233.o
++ riscv64-unknown-elf-ld -m elf32lriscv --no-relax -e _start build/rodata_25371462312233.o -o build/rodata_25371462312233.elf
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/rodata_25371462312233.elf -t elf --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+B R'
+
+Program exited with code: 2
+===== instructions retired
+687
++ for case_input in 25371462312233 21345671111111 54721631111111
++ sed 's/"12345671111111"/"21345671111111"/' build/rodata_elf_probe.s
++ riscv64-unknown-elf-as -march=rv32i -mabi=ilp32 -mno-relax build/rodata_21345671111111.s -o build/rodata_21345671111111.o
++ riscv64-unknown-elf-ld -m elf32lriscv --no-relax -e _start build/rodata_21345671111111.o -o build/rodata_21345671111111.elf
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/rodata_21345671111111.elf -t elf --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+R B' D2 R' B R' B' R D2 R B
+
+Program exited with code: 11
+===== instructions retired
+10423216
++ for case_input in 25371462312233 21345671111111 54721631111111
++ sed 's/"12345671111111"/"54721631111111"/' build/rodata_elf_probe.s
++ riscv64-unknown-elf-as -march=rv32i -mabi=ilp32 -mno-relax build/rodata_54721631111111.s -o build/rodata_54721631111111.o
++ riscv64-unknown-elf-ld -m elf32lriscv --no-relax -e _start build/rodata_54721631111111.o -o build/rodata_54721631111111.elf
++ /home/ritsu/tools/ripes/Ripes-v2.2.6-106-g5b8a616-linux-x86_64.AppImage --mode cli --src build/rodata_54721631111111.elf -t elf --proc RV32_ISS --iret
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+B2 R' B R' D' B R2 B R B D'
+
+Program exited with code: 11
+===== instructions retired
+28497577

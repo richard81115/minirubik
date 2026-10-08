@@ -1,0 +1,9 @@
+R B' D2 R' B R' B' R D2 R B
+
+Program exited with code: 11
+===== cycles
+10423216
+===== instructions retired
+10423216
+===== cycles per instruction (CPI)
+1
